@@ -1,0 +1,32 @@
+from collections import deque
+
+initial, goal = {'man': 'left', 'lion': 'left', 'goat': 'left', 'grass': 'left'}, {'man': 'right', 'lion': 'right', 'goat': 'right', 'grass': 'right'}
+moves = [('man',), ('man', 'lion'), ('man', 'goat'), ('man', 'grass')]
+
+def valid(state):
+    return (state['goat'] != state['lion'] or state['man'] == state['goat']) and (state['goat'] != state['grass'] or state['man'] == state['goat'])
+
+def apply(state, move):
+    new = state.copy()
+    for item in move: new[item] = 'right' if state['man'] == 'left' else 'left'
+    new['man'] = 'right' if state['man'] == 'left' else 'left'
+    return new
+
+def solve():
+    queue, visited = deque([(initial, [])]), set()
+    while queue:
+        current, steps = queue.popleft()
+        if current == goal: return steps
+        visited.add(tuple(current.values()))
+        for move in moves:
+            next_state = apply(current, move)
+            if valid(next_state) and tuple(next_state.values()) not in visited:
+                queue.append((next_state, steps + [move]))
+                visited.add(tuple(next_state.values()))
+    return None
+
+solution = solve()
+
+if solution:
+    for i, move in enumerate(solution, 1): print(f"Step {i}: {move}")
+else: print("No solution found.")

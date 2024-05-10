@@ -1,0 +1,37 @@
+import random
+
+def monty_hall_simulation(num_trials, switch_door):
+    wins = 0
+
+    for _ in range(num_trials):
+        doors = [0, 0, 1]  # 0 represents a goat, 1 represents the car
+        random.shuffle(doors)
+
+        # Contestant's initial choice
+        contestant_choice = random.randint(0, 2)
+
+        # Monty opens a door with a goat behind it
+        for door in range(3):
+            if door != contestant_choice and doors[door] == 0:
+                monty_opened = door
+                break
+
+        # Contestant switches their choice if switch_door is True
+        if switch_door:
+            for door in range(3):
+                if door != contestant_choice and door != monty_opened:
+                    contestant_choice = door
+                    break
+
+        # Check if the contestant won
+        if doors[contestant_choice] == 1:
+            wins += 1
+
+    return wins / num_trials
+
+if __name__ == "__main__":
+    num_trials = 10000
+    switch_door = True
+
+    win_percentage = monty_hall_simulation(num_trials, switch_door)
+    print(f"Win percentage with switching doors: {win_percentage:.2%}")
